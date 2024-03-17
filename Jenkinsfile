@@ -11,25 +11,20 @@ pipeline {
             }
         }
     }
-    stages{
         stage("Checkout from SCM"){
             steps{
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/kalis30nov/app-register'
             }
         }
-    }
-    stages{
         stage("Build Application"){
             steps{
                 sh "mvn clean package"
             }
         }
-    }
-    stages{
+
         stage("Test Application"){
             steps{
                 sh "mvn test"
             }
         }
-    }
 }
