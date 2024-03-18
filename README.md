@@ -110,20 +110,20 @@ Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline 
 -  Select the Github credential that was added earlier.
 -  Branch: Main
 
- 3) Install and Configure the SonarQube 
+## 3. Install and Configure the SonarQube 
  ------------------------------------
  
-## Update Package Repository and Upgrade Packages
+# Update Package Repository and Upgrade Packages
     $ sudo apt update
     $ sudo apt upgrade
-## Add PostgresSQL repository
+# Add PostgresSQL repository
     $ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
     $ wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
-## Install PostgreSQL
+# Install PostgreSQL
     $ sudo apt update
     $ sudo apt-get -y install postgresql postgresql-contrib
     $ sudo systemctl enable postgresql
-## Create Database for Sonarqube
+# Create Database for Sonarqube
     $ sudo passwd postgres
     $ su - postgres
     $ createuser sonar
@@ -133,17 +133,17 @@ Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline 
     $ grant all privileges on DATABASE sonarqube to sonar;
     $ \q
     $ exit
-## Add Adoptium repository
+# Add Adoptium repository
     $ sudo bash
     $ wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
     $ echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
- ## Install Java 17
+ # Install Java 17
     $ apt update
     $ apt install temurin-17-jdk
     $ update-alternatives --config java
     $ /usr/bin/java --version
     $ exit 
-## Linux Kernel Tuning
+# Linux Kernel Tuning
    # Increase Limits
     $ sudo vim /etc/security/limits.conf
     //Paste the below values at the bottom of the file
@@ -155,23 +155,23 @@ Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline 
     //Paste the below values at the bottom of the file
     vm.max_map_count = 262144
 
-#### Sonarqube Installation ####
-## Download and Extract
+## Sonarqube Installation ##
+# Download and Extract
     $ sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.0.65466.zip
     $ sudo apt install unzip
     $ sudo unzip sonarqube-9.9.0.65466.zip -d /opt
     $ sudo mv /opt/sonarqube-9.9.0.65466 /opt/sonarqube
-## Create user and set permissions
+# Create user and set permissions
      $ sudo groupadd sonar
      $ sudo useradd -c "user to run SonarQube" -d /opt/sonarqube -g sonar sonar
      $ sudo chown sonar:sonar /opt/sonarqube -R
-## Update Sonarqube properties with DB credentials
+# Update Sonarqube properties with DB credentials
      $ sudo vim /opt/sonarqube/conf/sonar.properties
      //Find and replace the below values, you might need to add the sonar.jdbc.url
      sonar.jdbc.username=sonar
      sonar.jdbc.password=sonar
      sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
-## Create service for Sonarqube
+# Create service for Sonarqube
 $ sudo vim /etc/systemd/system/sonar.service
 //Paste the below into the file
      [Unit]
@@ -194,18 +194,18 @@ $ sudo vim /etc/systemd/system/sonar.service
      [Install]
      WantedBy=multi-user.target
 
-## Start Sonarqube and Enable service
+# Start Sonarqube and Enable service
      $ sudo systemctl start sonar
      $ sudo systemctl enable sonar
      $ sudo systemctl status sonar
 
-## Watch log files and monitor for startup
+# Watch log files and monitor for startup
      $ sudo tail -f /opt/sonarqube/logs/sonar.log
 
- 4) Setup Bootstrap Server for eksctl and Setup Kubernetes using eksctl 
+## 4) Setup Bootstrap Server for eksctl and Setup Kubernetes using eksctl 
  ----------------------------------------------------------------------
  
-## Install AWS Cli on the above EC2
+# Install AWS Cli on the above EC2
 Refer--https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 $ sudo su
 $ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -214,21 +214,21 @@ $ unzip awscliv2.zip
 $ sudo ./aws/install
 
 
-## Installing kubectl
+# Installing kubectl
 $ sudo su
 $ curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl
 $ chmod +x ./kubectl  //Gave executable permisions
 $ mv kubectl /bin   //Because all our executable files are in /bin
 $ kubectl version --output=yaml
 
-## Installing  eksctl
+# Installing  eksctl
 Refer---https://github.com/eksctl-io/eksctl/blob/main/README.md#installation
 $ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 $ cd /tmp
 $ sudo mv /tmp/eksctl /bin
 $ eksctl version
 
-## Setup Kubernetes using eksctl
+# Setup Kubernetes using eksctl
 Refer--https://github.com/aws-samples/eks-workshop/issues/734
 $ eksctl create cluster --name nutmeg_demo \
 --region us-east-1 \
@@ -237,7 +237,7 @@ $ eksctl create cluster --name nutmeg_demo \
 
 $ kubectl get nodes
 
-5) ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
+## 5) ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
 -------------------------------------------------------------------
 
 # First, create a namespace
@@ -284,7 +284,7 @@ $ kubectl get nodes
 
 # $ kubectl get svc
 
-Cleanup 
+## Cleanup 
 ---------
 
 $ kubectl get all
