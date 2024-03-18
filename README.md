@@ -27,7 +27,14 @@ Slack      : To get notification on status of CICD build.
 1) Install and Configure the Jenkins-Master & Jenkins-Agent 
 ---------------------------------------------------------
 
+Jenkins-Master
+--------------
+$ Provision EC2 instance with 15Gb disk and run the following commands.
+$ Enable Public IP while creation.
+$ Enable port 8080 in SG of EC2 instance to access the Jenkins
+
 ## Install Java
+
 $ sudo apt update
 $ sudo apt upgrade
 $ sudo nano /etc/hostname
@@ -35,25 +42,55 @@ $ sudo init 6
 $ sudo apt install openjdk-17-jre
 $ java -version
 
-## Install Jenkins
-Refer--https://www.jenkins.io/doc/book/installing/linux/
-curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+## Install Jenkins by checking weekly release in Jenkins
+
+$ curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
   /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+$ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   https://pkg.jenkins.io/debian binary/ | sudo tee \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt-get update
-sudo apt-get install jenkins
-
+  
+$ sudo apt-get update
+$ sudo apt-get install jenkins
 $ sudo systemctl enable jenkins       //Enable the Jenkins service to start at boot
 $ sudo systemctl start jenkins        //Start Jenkins as a service
 $ systemctl status jenkins
-$ sudo nano /etc/ssh/sshd_config
+$ sudo vi /etc/ssh/sshd_config        //uncomment PublicKeyAuthentication and AuthorizedKey file
 $ sudo service sshd reload
 $ ssh-keygen 
 $ cd .ssh
 
- 2) Install and Configure the SonarQube 
+Jenkins-Agent
+--------------
+$ Provision EC2 instance with 15Gb disk and run the following commands.
+$ Enable Public IP while creation.
+
+## Install Java
+
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo nano /etc/hostname
+$ sudo apt install openjdk-17-jre
+$ java -version
+$ sudo init 6
+
+## Install Docker and setup up Master/Agent connection
+
+$ sudo apt-get install docker.io   // installs docker and docker group is created
+$ sudo usermod -aG docker $USER    // add current user to docker group
+$ vi /etc/ssh/sshd_config          // uncomment PublicKeyAuthentication and AuthorizedKey file
+$ sudo service sshd reload
+$ vi ~/.ssh/authorized_keys        // updatee the id_rsa.pub key of Jenkins Master
+
+$ Login to Jenkins console and make No. executor nodes to "0".
+$ Add Jenkins Agent in Nodes, with Jenkins Master's Private key and Private IP as new node and test Hello World pipeline job.
+
+ 2) Integrate Maven to Jenkins and Add GitHub credentials to Jenkins
+--------------------------------------------------------------------
+
+
+
+ 3) Install and Configure the SonarQube 
  ------------------------------------
  
 ## Update Package Repository and Upgrade Packages
@@ -145,7 +182,7 @@ $ sudo vim /etc/systemd/system/sonar.service
 ## Watch log files and monitor for startup
      $ sudo tail -f /opt/sonarqube/logs/sonar.log
 
- 3) Setup Bootstrap Server for eksctl and Setup Kubernetes using eksctl 
+ 4) Setup Bootstrap Server for eksctl and Setup Kubernetes using eksctl 
  ----------------------------------------------------------------------
  
 ## Install AWS Cli on the above EC2
@@ -180,7 +217,7 @@ $ eksctl create cluster --name nutmeg_demo \
 
 $ kubectl get nodes
 
-4) ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
+5) ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
 -------------------------------------------------------------------
 
 # First, create a namespace
@@ -225,12 +262,15 @@ $ kubectl get nodes
 # Add above EKS cluster to ArgoCD with below command
      $ argocd cluster add i-04afe7b218bd3f3ce@nutmeg-demo.us-east-1.eksctl.io --name nutmeg-demo-eks-cluster
 
-13 ) $ kubectl get svc
-============================================================= Cleanup =============================================================
+# $ kubectl get svc
+
+Cleanup 
+---------
+
 $ kubectl get all
-$ kubectl delete deployment.apps/app-register-deployment       //it will delete the deployment
-$ kubectl delete service/app-register-service              //it will delete the service
-$ eksctl delete cluster nutmeg-demo.us-east-1.eksctl.io --region us-east-1        //it will delete the EKS cluster
+$ kubectl delete deployment.apps/app-register-deployment                            //it will delete the deployment                 
+$ kubectl delete service/app-register-service                                       //it will delete the service                    
+$ eksctl delete cluster nutmeg-demo.us-east-1.eksctl.io --region us-east-1          //it will delete the EKS cluster
 
 
 
