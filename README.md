@@ -76,19 +76,39 @@ $ sudo init 6
 
 ## Install Docker and setup up Master/Agent connection
 
-$ sudo apt-get install docker.io   // installs docker and docker group is created
-$ sudo usermod -aG docker $USER    // add current user to docker group
-$ vi /etc/ssh/sshd_config          // uncomment PublicKeyAuthentication and AuthorizedKey file
-$ sudo service sshd reload
-$ vi ~/.ssh/authorized_keys        // updatee the id_rsa.pub key of Jenkins Master
+$ sudo apt-get install docker.io   // installs docker and docker group is created                                                   
+$ sudo usermod -aG docker $USER    // add current user to docker group                                                              
+$ vi /etc/ssh/sshd_config          // uncomment PublicKeyAuthentication and AuthorizedKey file                                      
+$ sudo service sshd reload                                                                                                          
+$ vi ~/.ssh/authorized_keys        // updatee the id_rsa.pub key of Jenkins Master                                                  
 
-$ Login to Jenkins console and make No. executor nodes to "0".
-$ Add Jenkins Agent in Nodes, with Jenkins Master's Private key and Private IP as new node and test Hello World pipeline job.
+$ Login to Jenkins console and make No. executor nodes to "0".                                                                      
+$ Add Jenkins Agent in Nodes, with Jenkins Master's Private key and Private IP as new node and test Hello World pipeline job.       
 
  2) Integrate Maven to Jenkins and Add GitHub credentials to Jenkins
 --------------------------------------------------------------------
 
+Install Plugins:
 
+$ Maven Integration                                                                                                                 
+$ Pipeline Maven                                                                                                                    
+$ Ecplise Temurin Installer                                                                                                         
+
+Configure Tools
+
+Maven --> Maven3                                                                                                                    
+JDK --> Java17                                                                                                                      
+// This config will be referred in Jenkins pipeline.                                                                                
+
+Github Credential : Create personal access token and save in Jenkins Credentials as username and password.                         
+
+Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline job.                                                
+
+-  PollSCM everyminute
+-  Poll script from SCM
+-  Provide the URL of the Application Repo
+-  Select the Github credential that was added earlier.
+-  Branch: Main
 
  3) Install and Configure the SonarQube 
  ------------------------------------
