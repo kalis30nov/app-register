@@ -31,8 +31,9 @@ Slack      : To get notification on status of CICD build.
 
 Jenkins-Master
 --------------
-$ Provision EC2 instance with 15Gb disk and run the following commands.
+$ Provision EC2 instance with 15Gb disk and run the following commands.                                                              
 $ Enable Public IP while creation.
+
 $ Enable port 8080 in SG of EC2 instance to access the Jenkins
 
 ## Install Java
