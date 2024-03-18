@@ -111,7 +111,12 @@ Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline 
 -  Branch: Main
 
 ## 3. Install and Configure the SonarQube 
- ------------------------------------
+ -----------------------------------------
+
+$ Provision EC2 instance with 15Gb disk and run the following commands.
+$ Enable Public IP while creation.
+$ Enable port 9000 in SG of SonarQube instance.
+
  
 # Update Package Repository and Upgrade Packages
     $ sudo apt update
@@ -201,6 +206,25 @@ $ sudo vim /etc/systemd/system/sonar.service
 
 # Watch log files and monitor for startup
      $ sudo tail -f /opt/sonarqube/logs/sonar.log
+
+$ Login to sonarqube with id admin:admin
+$ Myaccount --> Security --> GenerateToken
+$ Add generated token in Jenkins as secrettext.
+$ Create webhook : Admin -> Config -> Webhook -> <jenkins_url>/sonarqube-webhook
+
+Plugins Install:
+----------------
+$ SonarQube Scanner for Jenkins
+$ Sonar Quality Gates Plugin
+$ Quality Gates Plugin
+
+Add Sonarqube EC2 instance in Jenkins
+----------------------------------------
+$ Manage Jenkins -> System -> SonarQube servers -> Sonarserver URL with port 9000 -> Sonar authentication
+
+SonarScanner for MSBuild installations
+$ Manage Jenkins -> Tools -> SonarScanner for MSBuild installations -> Select Version.
+
 
 ## 4) Setup Bootstrap Server for eksctl and Setup Kubernetes using eksctl 
  ----------------------------------------------------------------------
