@@ -39,10 +39,15 @@ $ Enable port 8080 in SG of EC2 instance to access the Jenkins
 ## Install Java
 
 $ sudo apt update
+
 $ sudo apt upgrade
+
 $ sudo nano /etc/hostname
+
 $ sudo init 6
+
 $ sudo apt install openjdk-17-jre
+
 $ java -version
 
 ## Install Jenkins by checking weekly release in Jenkins
