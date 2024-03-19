@@ -96,6 +96,7 @@ pipeline {
                 }
             }
         }
+    }
 
     post {
         failure {
@@ -109,5 +110,4 @@ pipeline {
                 mimeType: 'text/html',to: "kalimuthu30nov@yahoo.com"
             }  
         }
-    }
 }
