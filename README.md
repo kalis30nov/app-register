@@ -295,7 +295,9 @@ $ sudo vim /etc/systemd/system/sonar.service
  ----------------------------------------------------------------------
  
 ## Create EC2 instance
+
 ## Create IAM Role with admin access and assing to this EC2.
+
 ## Install AWS Cli on the above EC2
 $ sudo su
 $ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
