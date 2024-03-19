@@ -145,7 +145,9 @@ Steps
     JDK --> Java17                                                                                                                  
     // This config will be referred in Jenkins pipeline.                                                                            
 
-## Github Credential : Create personal access token and save in Jenkins Credentials as username and password.                        
+## Github Credential
+
+   Create personal access token and save in Jenkins Credentials as username and password.                        
 
 ## Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline job.                                              
 
