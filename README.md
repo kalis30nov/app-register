@@ -26,16 +26,16 @@ Slack      : To get notification on status of CICD build.
 6) ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
 
 
-## 1) Install and Configure the Jenkins-Master & Jenkins-Agent 
+# 1) Install and Configure the Jenkins-Master & Jenkins-Agent 
 ---------------------------------------------------------
 
-# Jenkins-Master
+## Jenkins-Master
 --------------
     $  Provision EC2 instance with 15Gb disk and run the following commands.                                                        
     $ Enable Public IP while creation.
     $ Enable port 8080 in SG of EC2 instance to access the Jenkins
 
-# Install Java
+## Install Java
 
     $ sudo apt update
     $ sudo apt upgrade
@@ -44,7 +44,7 @@ Slack      : To get notification on status of CICD build.
     $ sudo apt install openjdk-17-jre
     $ java -version
 
-# Install Jenkins by checking weekly release in Jenkins
+## Install Jenkins by checking weekly release in Jenkins
 
     $ curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
       /usr/share/keyrings/jenkins-keyring.asc > /dev/null
@@ -62,12 +62,12 @@ Slack      : To get notification on status of CICD build.
     $ ssh-keygen 
     $ cd .ssh
 
-# Jenkins-Agent
+## Jenkins-Agent
 --------------
     $ Provision EC2 instance with 15Gb disk and run the following commands.
     $ Enable Public IP while creation.
 
-# Install Java
+## Install Java
 
     $ sudo apt update
     $ sudo apt upgrade
@@ -76,7 +76,7 @@ Slack      : To get notification on status of CICD build.
     $ java -version
     $ sudo init 6
 
-# Install Docker and setup up Master/Agent connection
+## Install Docker and setup up Master/Agent connection
 
     $ sudo apt-get install docker.io   // installs docker and docker group is created                                              
     $ sudo usermod -aG docker $USER    // add current user to docker group                                                          
@@ -86,23 +86,23 @@ Slack      : To get notification on status of CICD build.
     $ Login to Jenkins console and make No. executor nodes to "0".                                                                  
     $ Add Jenkins Agent in Nodes, with Jenkins Master's Private key and Private IP as new node and test Hello World pipeline job. 
     
-## 2) Integrate Maven to Jenkins and Add GitHub credentials to Jenkins
+# 2) Integrate Maven to Jenkins and Add GitHub credentials to Jenkins
 --------------------------------------------------------------------
 
-#Install Plugins:
+## Install Plugins:
 
     $ Maven Integration                                                                                                             
     $ Pipeline Maven                                                                                                                
     $ Ecplise Temurin Installer                                                                                                         
-#Configure Tools
+## Configure Tools
 
     Maven --> Maven3                                                                                                                
     JDK --> Java17                                                                                                                  
     // This config will be referred in Jenkins pipeline.                                                                            
 
-# Github Credential : Create personal access token and save in Jenkins Credentials as username and password.                        
+## Github Credential : Create personal access token and save in Jenkins Credentials as username and password.                        
 
-# Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline job.                                              
+## Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline job.                                              
 
 -      PollSCM everyminute
 -      Poll script from SCM
@@ -110,27 +110,27 @@ Slack      : To get notification on status of CICD build.
 -      Select the Github credential that was added earlier.
 -      Branch: Main
 
-## 3. Install and Configure the SonarQube 
+# 3. Install and Configure the SonarQube 
  -----------------------------------------
 
     $ Provision EC2 instance with 15Gb disk and run the following commands.
     $ Enable Public IP while creation.
     $ Enable port 9000 in SG of SonarQube instance.
  
-# Update Package Repository and Upgrade Packages
+## Update Package Repository and Upgrade Packages
     $ sudo apt update
     $ sudo apt upgrade
     
-# Add PostgresSQL repository
+## Add PostgresSQL repository
     $ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
     $ wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
     
-# Install PostgreSQL
+## Install PostgreSQL
     $ sudo apt update
     $ sudo apt-get -y install postgresql postgresql-contrib
     $ sudo systemctl enable postgresql
     
-# Create Database for Sonarqube
+## Create Database for Sonarqube
     $ sudo passwd postgres
     $ su - postgres
     $ createuser sonar
@@ -141,18 +141,18 @@ Slack      : To get notification on status of CICD build.
     $ \q
     $ exit
     
-# Add Adoptium repository
+## Add Adoptium repository
     $ sudo bash
     $ wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
     $ echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
     
- # Install Java 17
+ ## Install Java 17
     $ apt update
     $ apt install temurin-17-jdk
     $ update-alternatives --config java
     $ /usr/bin/java --version
     $ exit 
-# Linux Kernel Tuning
+## Linux Kernel Tuning
    # Increase Limits
     $ sudo vim /etc/security/limits.conf
     //Paste the below values at the bottom of the file
@@ -165,25 +165,25 @@ Slack      : To get notification on status of CICD build.
     vm.max_map_count = 262144
 
 ## Sonarqube Installation ##
-# Download and Extract
+## Download and Extract
     $ sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.0.65466.zip
     $ sudo apt install unzip
     $ sudo unzip sonarqube-9.9.0.65466.zip -d /opt
     $ sudo mv /opt/sonarqube-9.9.0.65466 /opt/sonarqube
     
-# Create user and set permissions
+## Create user and set permissions
      $ sudo groupadd sonar
      $ sudo useradd -c "user to run SonarQube" -d /opt/sonarqube -g sonar sonar
      $ sudo chown sonar:sonar /opt/sonarqube -R
      
-# Update Sonarqube properties with DB credentials
+## Update Sonarqube properties with DB credentials
      $ sudo vim /opt/sonarqube/conf/sonar.properties
      //Find and replace the below values, you might need to add the sonar.jdbc.url
      sonar.jdbc.username=sonar
      sonar.jdbc.password=sonar
      sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
      
-# Create service for Sonarqube
+## Create service for Sonarqube
 $ sudo vim /etc/systemd/system/sonar.service
 //Paste the below into the file
      [Unit]
@@ -206,35 +206,35 @@ $ sudo vim /etc/systemd/system/sonar.service
      [Install]
      WantedBy=multi-user.target
 
-# Start Sonarqube and Enable service
+## Start Sonarqube and Enable service
      $ sudo systemctl start sonar
      $ sudo systemctl enable sonar
      $ sudo systemctl status sonar
 
-# Watch log files and monitor for startup
+## Watch log files and monitor for startup
      $ sudo tail -f /opt/sonarqube/logs/sonar.log
 
-# Sonar Webhook setup
+## Sonar Webhook setup
     $ Login to sonarqube with id admin:admin
     $ Myaccount --> Security --> GenerateToken
     $ Add generated token in Jenkins as secrettext.
     $ Create webhook : Admin -> Config -> Webhook -> <jenkins_url>/sonarqube-webhook
 
-# Plugins Install:
+## Plugins Install:
     $ SonarQube Scanner for Jenkins
     $ Sonar Quality Gates Plugin
     $ Quality Gates Plugin
 
-# Add Sonarqube EC2 instance in Jenkins
+## Add Sonarqube EC2 instance in Jenkins
     $ Manage Jenkins -> System -> SonarQube servers -> Sonarserver URL with port 9000 -> Sonar authentication
 
-# SonarScanner for MSBuild installations
+## SonarScanner for MSBuild installations
     $ Manage Jenkins -> Tools -> SonarScanner for MSBuild installations -> Select Version
 
-## 4) Setup DockerHub
+# 4) Setup DockerHub
 -----------------------
 
-# Plugins Install:
+## Plugins Install:
     $ CloudBees Docker Build and Publish plugin
     $ Docker API Plugin
     $ Docker Commons Plugin
@@ -242,16 +242,16 @@ $ sudo vim /etc/systemd/system/sonar.service
     $ Docker plugin
     $ docker-build-step
 
-# DockerHub link with Jenkins
+## DockerHub link with Jenkins
     $ DockerHub -> MyAccount -> Security -> CreateNew Access Token
     $ Manage Jenkins - > Credentials -> Username and Password
 
-## 5) Setup Bootstrap Server for eksctl and Setup Kubernetes using eksctl 
+# 5) Setup Bootstrap Server for eksctl and Setup Kubernetes using eksctl 
  ----------------------------------------------------------------------
  
-# Create EC2 instance
-# Create IAM Role with admin access and assing to this EC2.
-# Install AWS Cli on the above EC2
+## Create EC2 instance
+## Create IAM Role with admin access and assing to this EC2.
+## Install AWS Cli on the above EC2
 $ sudo su
 $ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 $ apt install unzip 
@@ -259,21 +259,21 @@ $ unzip awscliv2.zip
 $ sudo ./aws/install
 
 
-# Installing kubectl
+## Installing kubectl
 $ sudo su
 $ curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl
 $ chmod +x ./kubectl  //Gave executable permisions
 $ mv kubectl /bin   //Because all our executable files are in /bin
 $ kubectl version --output=yaml
 
-# Installing  eksctl
+## Installing  eksctl
 Refer---https://github.com/eksctl-io/eksctl/blob/main/README.md#installation
 $ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 $ cd /tmp
 $ sudo mv /tmp/eksctl /bin
 $ eksctl version
 
-# Setup Kubernetes using eksctl
+## Setup Kubernetes using eksctl
 Refer--https://github.com/aws-samples/eks-workshop/issues/734
 $ eksctl create cluster --name nutmeg_demo \
 --region us-east-1 \
@@ -282,13 +282,13 @@ $ eksctl create cluster --name nutmeg_demo \
 
 $ kubectl get nodes
 
-## 6) ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
+# 6) ArgoCD Installation on EKS Cluster and Add EKS Cluster to ArgoCD
 -------------------------------------------------------------------
 
-# First, create a namespace
+## First, create a namespace
     $ kubectl create namespace argocd
 
-# Next, let's install ArgoCd using Helm.
+## Next, let's install ArgoCd using Helm.
     $ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
     $ chmod 700 get_helm.sh
     $ ./get_helm.sh
@@ -297,40 +297,40 @@ $ kubectl get nodes
     $ helm repo add argo https://argoproj.github.io/argo-helm
     $ helm install argocd-release argo/argo-cd --namespace argocd
 
-# Now we can view the pods created in the ArgoCD namespace.
+## Now we can view the pods created in the ArgoCD namespace.
     $ kubectl get pods -n argocd
 
-# To interact with the API Server we need to deploy the CLI:
+## To interact with the API Server we need to deploy the CLI:
     $ curl --silent --location -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.4.7/argocd-linux-amd64
     $ chmod +x /usr/local/bin/argocd
 
-# Expose argocd-server
+## Expose argocd-server
     $ kubectl patch svc argocd-release-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
-# Wait about 2 minutes for the LoadBalancer creation
+## Wait about 2 minutes for the LoadBalancer creation
     $ kubectl get svc -n argocd
 
-# Get pasword and decode it.
+## Get pasword and decode it.
     $ kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
     $ echo U0dVT3U3ZFdOOHc5WVl5WQ== |base64 -d
 
-# Add EKS Cluster to ArgoCD
+## Add EKS Cluster to ArgoCD
     login to ArgoCD from CLI
     $ argocd login a2a336b7c390c47b890ea6a75aa7129f-80549556.us-east-1.elb.amazonaws.com
 
-# 
+## List cluster and verify 
      $ argocd cluster list
 
-# Below command will show the EKS cluster
+## Below command will show the EKS cluster
      $ kubectl config get-contexts
 
-# Add above EKS cluster to ArgoCD with below command
+## Add above EKS cluster to ArgoCD with below command
      $ argocd cluster add i-04afe7b218bd3f3ce@nutmeg-demo.us-east-1.eksctl.io --name nutmeg-demo-eks-cluster
 
-# $ kubectl get svc
+## $ kubectl get svc
 
-## 7) Cleanup 
----------
+# 7) Cleanup 
+------------
 
 $ kubectl get all
 $ kubectl delete deployment.apps/app-register-deployment                            //it will delete the deployment                 
