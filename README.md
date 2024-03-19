@@ -4,8 +4,8 @@ Register-App
 
 
 *****************************************************************************************************************************
-Tools Used:
------------
+Tools Used / Prerequisites :
+---------------------------
 
 Git        : Version control system for efficient code management and collaboration.                                                   
 Jenkins    : Auotmation server for continous integration and delivery pipelines.                                                       
