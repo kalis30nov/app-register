@@ -296,9 +296,9 @@ $ sudo vim /etc/systemd/system/sonar.service
  
 ## Create EC2 instance
 
-## Create IAM Role with admin access and assing to this EC2.
+## Create IAM Role with eks access and assing to this EC2.
 
-## Install AWS Cli on the above EC2
+## Install awscli on the above EC2
 $ sudo su
 $ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 $ apt install unzip 
@@ -314,14 +314,12 @@ $ mv kubectl /bin   //Because all our executable files are in /bin
 $ kubectl version --output=yaml
 
 ## Installing  eksctl
-Refer---https://github.com/eksctl-io/eksctl/blob/main/README.md#installation
 $ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 $ cd /tmp
 $ sudo mv /tmp/eksctl /bin
 $ eksctl version
 
 ## Setup Kubernetes using eksctl
-Refer--https://github.com/aws-samples/eks-workshop/issues/734
 $ eksctl create cluster --name nutmeg_demo \
 --region us-east-1 \
 --node-type t2.small \
