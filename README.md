@@ -32,17 +32,26 @@ Steps
 
 4. Configure the pipeline stages:
     Stage 1: Use the Git plugin to check out the source code from the Git repository.
+   
     Stage 2: Use the Maven Integration plugin to build the Java application.
+   
     Stage 3: Use the JUnit and Mockito plugins to run unit tests.
+   
     Stage 4: Use the SonarQube plugin to analyze the code quality of the Java application.
+   
     Stage 5: Use the Maven Integration plugin to package the application into a JAR file.
+   
     Stage 6: Push the image to DockerHub.
+   
     Stage 7: Manifest file repo is updated with new tag.
+   
     Stage 8: Use ArgoCD to promote application to dev environment.
+   
     Stage 9: Run user acceptance tests on the deployed application.
+   
     Stage 10: Promote the application to a production environment using Argo CD.
 
-5. Set up Argo CD:
+6. Set up Argo CD:
     Install Argo CD on the Kubernetes cluster.
     Set up a Git repository for Argo CD to track the changes in the Manifest file repo.
     Deploy the changes to the cluster added.
