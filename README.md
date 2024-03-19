@@ -29,70 +29,63 @@ Slack      : To get notification on status of CICD build.
 ## 1) Install and Configure the Jenkins-Master & Jenkins-Agent 
 ---------------------------------------------------------
 
-Jenkins-Master
+# Jenkins-Master
 --------------
-$ Provision EC2 instance with 15Gb disk and run the following commands.                                                              
-$ Enable Public IP while creation.
+    $  Provision EC2 instance with 15Gb disk and run the following commands.                                                        
+    $ Enable Public IP while creation.
+    $ Enable port 8080 in SG of EC2 instance to access the Jenkins
 
-$ Enable port 8080 in SG of EC2 instance to access the Jenkins
+# Install Java
 
-## Install Java
+    $ sudo apt update
+    $ sudo apt upgrade
+    $ sudo nano /etc/hostname
+    $ sudo init 6
+    $ sudo apt install openjdk-17-jre
+    $ java -version
 
-$ sudo apt update
+# Install Jenkins by checking weekly release in Jenkins
 
-$ sudo apt upgrade
-
-$ sudo nano /etc/hostname
-
-$ sudo init 6
-
-$ sudo apt install openjdk-17-jre
-
-$ java -version
-
-## Install Jenkins by checking weekly release in Jenkins
-
-$ curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
-  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-$ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-  https://pkg.jenkins.io/debian binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
+    $ curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+      /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+    $ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+      https://pkg.jenkins.io/debian binary/ | sudo tee \
+    /etc/apt/sources.list.d/jenkins.list > /dev/null
   
-$ sudo apt-get update
-$ sudo apt-get install jenkins
-$ sudo systemctl enable jenkins       //Enable the Jenkins service to start at boot
-$ sudo systemctl start jenkins        //Start Jenkins as a service
-$ systemctl status jenkins
-$ sudo vi /etc/ssh/sshd_config        //uncomment PublicKeyAuthentication and AuthorizedKey file
-$ sudo service sshd reload
-$ ssh-keygen 
-$ cd .ssh
+    $ sudo apt-get update
+    $ sudo apt-get install jenkins
+    $ sudo systemctl enable jenkins       //Enable the Jenkins service to start at boot
+    $ sudo systemctl start jenkins        //Start Jenkins as a service
+    $ systemctl status jenkins
+    $ sudo vi /etc/ssh/sshd_config        //uncomment PublicKeyAuthentication and AuthorizedKey file
+    $ sudo service sshd reload
+    $ ssh-keygen 
+    $ cd .ssh
 
-Jenkins-Agent
+# Jenkins-Agent
 --------------
-$ Provision EC2 instance with 15Gb disk and run the following commands.
-$ Enable Public IP while creation.
+    $ Provision EC2 instance with 15Gb disk and run the following commands.
+    $ Enable Public IP while creation.
 
-## Install Java
+# Install Java
 
-$ sudo apt update
-$ sudo apt upgrade
-$ sudo nano /etc/hostname
-$ sudo apt install openjdk-17-jre
-$ java -version
-$ sudo init 6
+    $ sudo apt update
+    $ sudo apt upgrade
+    $ sudo nano /etc/hostname
+    $ sudo apt install openjdk-17-jre
+    $ java -version
+    $ sudo init 6
 
-## Install Docker and setup up Master/Agent connection
+# Install Docker and setup up Master/Agent connection
 
-$ sudo apt-get install docker.io   // installs docker and docker group is created                                                   
-$ sudo usermod -aG docker $USER    // add current user to docker group                                                              
-$ vi /etc/ssh/sshd_config          // uncomment PublicKeyAuthentication and AuthorizedKey file                                      
-$ sudo service sshd reload                                                                                                          
-$ vi ~/.ssh/authorized_keys        // updatee the id_rsa.pub key of Jenkins Master                                                  
-
-$ Login to Jenkins console and make No. executor nodes to "0".                                                                      
-$ Add Jenkins Agent in Nodes, with Jenkins Master's Private key and Private IP as new node and test Hello World pipeline job.       
-
+    $ sudo apt-get install docker.io   // installs docker and docker group is created                                              
+    $ sudo usermod -aG docker $USER    // add current user to docker group                                                          
+    $ vi /etc/ssh/sshd_config          // uncomment PublicKeyAuthentication and AuthorizedKey file                                  
+    $ sudo service sshd reload                                                                                                      
+    $ vi ~/.ssh/authorized_keys        // updatee the id_rsa.pub key of Jenkins Master                                              
+    $ Login to Jenkins console and make No. executor nodes to "0".                                                                  
+    $ Add Jenkins Agent in Nodes, with Jenkins Master's Private key and Private IP as new node and test Hello World pipeline job. 
+    
 ## 2) Integrate Maven to Jenkins and Add GitHub credentials to Jenkins
 --------------------------------------------------------------------
 
@@ -107,9 +100,9 @@ $ Add Jenkins Agent in Nodes, with Jenkins Master's Private key and Private IP a
     JDK --> Java17                                                                                                                  
     // This config will be referred in Jenkins pipeline.                                                                            
 
-Github Credential : Create personal access token and save in Jenkins Credentials as username and password.                         
+# Github Credential : Create personal access token and save in Jenkins Credentials as username and password.                        
 
-Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline job.                                                
+# Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline job.                                              
 
 -      PollSCM everyminute
 -      Poll script from SCM
@@ -127,13 +120,16 @@ Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline 
 # Update Package Repository and Upgrade Packages
     $ sudo apt update
     $ sudo apt upgrade
+    
 # Add PostgresSQL repository
     $ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
     $ wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+    
 # Install PostgreSQL
     $ sudo apt update
     $ sudo apt-get -y install postgresql postgresql-contrib
     $ sudo systemctl enable postgresql
+    
 # Create Database for Sonarqube
     $ sudo passwd postgres
     $ su - postgres
@@ -144,10 +140,12 @@ Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline 
     $ grant all privileges on DATABASE sonarqube to sonar;
     $ \q
     $ exit
+    
 # Add Adoptium repository
     $ sudo bash
     $ wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
     $ echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+    
  # Install Java 17
     $ apt update
     $ apt install temurin-17-jdk
@@ -172,16 +170,19 @@ Copy the Application code to Git Repo and create a Jenkinsfile with CI pipeline 
     $ sudo apt install unzip
     $ sudo unzip sonarqube-9.9.0.65466.zip -d /opt
     $ sudo mv /opt/sonarqube-9.9.0.65466 /opt/sonarqube
+    
 # Create user and set permissions
      $ sudo groupadd sonar
      $ sudo useradd -c "user to run SonarQube" -d /opt/sonarqube -g sonar sonar
      $ sudo chown sonar:sonar /opt/sonarqube -R
+     
 # Update Sonarqube properties with DB credentials
      $ sudo vim /opt/sonarqube/conf/sonar.properties
      //Find and replace the below values, you might need to add the sonar.jdbc.url
      sonar.jdbc.username=sonar
      sonar.jdbc.password=sonar
      sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
+     
 # Create service for Sonarqube
 $ sudo vim /etc/systemd/system/sonar.service
 //Paste the below into the file
