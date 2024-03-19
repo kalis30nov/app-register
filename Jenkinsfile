@@ -96,5 +96,17 @@ pipeline {
                 }
             }
         }
+
+        post {
+            failure {
+                emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
+                      subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
+                      mimeType: 'text/html',to: "kalimuthu30nov@yahoo.com"
+            }
+            success {
+                emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
+                     subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
+                     mimeType: 'text/html',to: "kalimuthu30nov@yahoo.com"
+      }  
 }
 }
